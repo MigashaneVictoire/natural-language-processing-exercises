@@ -13,6 +13,20 @@ import acquire
 
 article = acquire.get_news_articles()
 
+def prep_data(text:str, more_stopwords=[]):
+    'A simple function to cleanup text data'
+    wnl = nltk.stem.WordNetLemmatizer() # lemmitizer object
+    # add more stop words to the original dictionary stop words from the english language
+    stopwords = nltk.corpus.stopwords.words('english') + more_stopwords
+    # normalize the string
+    text = (unicodedata.normalize('NFKD', text).encode('ascii', 'ignore').decode('utf-8', 'ignore').lower())
+    # remove not letters of numbers
+    words = re.sub(r'[^\w\s]', '', text).split()
+    # lemmatize the string
+    lemma =  [wnl.lemmatize(word) for word in words if word not in stopwords]
+    return lemma
+
+
 def basic_clean(string_:list):
     clean_df = []
     for ele in string_.values:
